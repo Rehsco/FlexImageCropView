@@ -108,7 +108,7 @@ public class ImageCropView: CommonFlexView, UIGestureRecognizerDelegate {
         }
     }
     
-    fileprivate var originalImage: UIImage? {
+    public var originalImage: UIImage? {
         didSet {
             if self.window != nil {
                 displayImage()

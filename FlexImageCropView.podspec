@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'FlexImageCropView'
-  s.version          = '1.1'
+  s.version          = '1.2.1'
   s.license          = 'MIT'
   s.summary          = 'Image Cropping using Flex Style Component Framework'
   s.homepage         = 'https://github.com/Rehsco/FlexImageCropView.git'

@@ -36,6 +36,15 @@ import MJRFlexStyleComponents
     let kK = CGFloat(0)
 #endif
 
+#if arch(x86_64) || CPU_TYPE_ARM64
+    let INFINITY = Double.greatestFiniteMagnitude
+    let EPSILON = CGFloat(Double.ulpOfOne)
+    let FLOAT_LEAST_MIN = CGFloat(Double.leastNormalMagnitude)
+#else
+    let INFINITY = CGFloat.greatestFiniteMagnitude
+    let EPSILON = CGFloat(Float.ulpOfOne)
+    let FLOAT_LEAST_MIN = CGFloat(Float.leastNormalMagnitude)
+#endif
 
 public class ImageCropView: CommonFlexView, UIGestureRecognizerDelegate {
     fileprivate let kResetAnimationDuration = CGFloat(0.4)
@@ -153,11 +162,6 @@ public class ImageCropView: CommonFlexView, UIGestureRecognizerDelegate {
         })
         self.rightViewMenu?.createIconMenuItem(imageName: "Accept", iconSize: 24, selectionHandler: {
             self.imageCroppedHandler?(self.getImageRelativeCroppingRect())
-            NSLog("image scrollview bounds: \(self.imageScrollView.bounds)")
-            NSLog("image scrollview scale: \(self.imageScrollView.zoomScale)")
-            NSLog("image scrollview minscale: \(self.imageScrollView.minimumZoomScale), maxscale:  \(self.imageScrollView.maximumZoomScale)")
-            NSLog("rel crop rect: \(self.getImageRelativeCroppingRect())")
-            NSLog("abs crop rect: \(self.cropRect)")
             self.closeView()
         })
         self.addMenu(self.rightViewMenu!)
@@ -193,7 +197,7 @@ public class ImageCropView: CommonFlexView, UIGestureRecognizerDelegate {
         let contentOffset = CGPoint(x: (isvb.width / rect.width) * rect.minX, y: (isvb.height / rect.height) * rect.minY)
         self.imageScrollView.contentOffset = contentOffset
     }
-    
+
     fileprivate var cropRect: CGRect {
         var rect = CGRect.zero
         let zoomScale = 1.0 / imageScrollView.zoomScale
@@ -208,8 +212,8 @@ public class ImageCropView: CommonFlexView, UIGestureRecognizerDelegate {
         let ceilWidth = ceil(width)
         let ceilHeight = ceil(height)
         
-        if abs(ceilWidth - width) < pow(10, kK) * RSK_EPSILON * abs(ceilWidth + width) || abs(ceilWidth - width) < RSK_MIN ||
-            abs(ceilHeight - height) < pow(10, kK) * RSK_EPSILON * abs(ceilHeight + height) || abs(ceilHeight - height) < RSK_MIN
+        if abs(ceilWidth - width) < pow(10, kK) * EPSILON * abs(ceilWidth + width) || abs(ceilWidth - width) < FLOAT_LEAST_MIN ||
+            abs(ceilHeight - height) < pow(10, kK) * EPSILON * abs(ceilHeight + height) || abs(ceilHeight - height) < FLOAT_LEAST_MIN
         {
             rect.size.width = ceilWidth
             rect.size.height = ceilHeight
@@ -223,34 +227,10 @@ public class ImageCropView: CommonFlexView, UIGestureRecognizerDelegate {
 
     private func getImageRelativeCroppingRect() -> CGRect {
         guard let image = self.originalImage else { return CGRect(x: 0, y: 0, width: 0, height: 0) }
-        var cropRect = self.cropRect
-        
-        // Step 1: check and correct the crop rect.
+
+        let cropRect = checkAndCorrectCropRect(forImage: image, withCurrentCropRect: self.cropRect)
+
         let imageSize = image.size
-        let x = cropRect.minX
-        let y = cropRect.minY
-        let width = cropRect.width
-        let height = cropRect.height
-        
-        let imageOrientation = image.imageOrientation
-        if imageOrientation == .right || imageOrientation == .rightMirrored {
-            cropRect.origin.x = y
-            cropRect.origin.y = round(imageSize.width - cropRect.width - x)
-            cropRect.size.width = height
-            cropRect.size.height = width
-        } else if imageOrientation == .left || imageOrientation == .leftMirrored {
-            cropRect.origin.x = round(imageSize.height - cropRect.height - y)
-            cropRect.origin.y = x
-            cropRect.size.width = height
-            cropRect.size.height = width
-        } else if imageOrientation == .down || imageOrientation == .downMirrored {
-            cropRect.origin.x = round(imageSize.width - cropRect.width - x)
-            cropRect.origin.y = round(imageSize.height - cropRect.height - y)
-        }
-        
-        let imageScale = image.scale
-        cropRect = cropRect.applying(CGAffineTransform(scaleX: imageScale, y: imageScale))
-        
         let relCropRect = CGRect(x: cropRect.minX / imageSize.width, y: cropRect.minY / imageSize.height, width: cropRect.width / imageSize.width, height: cropRect.height / imageSize.height)
         return relCropRect
     }
@@ -370,45 +350,6 @@ public class ImageCropView: CommonFlexView, UIGestureRecognizerDelegate {
         self.imageScrollView.zoomScale = zoomScale
     }
 
-    fileprivate func intersectionPointsOfLineSegment(lineSegment: RSKLineSegment, withRect rect: CGRect) -> [CGPoint] {
-        let top = RSKLineSegmentMake(
-            start: CGPoint(x: rect.minX, y: rect.minY),
-            end: CGPoint(x: rect.maxX, y: rect.minY))
-        
-        let right = RSKLineSegmentMake(
-            start: CGPoint(x: rect.maxX, y: rect.minY),
-            end: CGPoint(x: rect.maxX, y: rect.maxY))
-        
-        let bottom = RSKLineSegmentMake(
-            start: CGPoint(x: rect.minX, y: rect.maxY),
-            end: CGPoint(x: rect.maxX, y: rect.maxY))
-        
-        let left = RSKLineSegmentMake(
-            start: CGPoint(x: rect.minX, y: rect.minY),
-            end: CGPoint(x: rect.minX, y: rect.maxY))
-        
-        let p0 = RSKLineSegmentIntersection(ls1: top, ls2: lineSegment)
-        let p1 = RSKLineSegmentIntersection(ls1: right, ls2: lineSegment)
-        let p2 = RSKLineSegmentIntersection(ls1: bottom, ls2: lineSegment)
-        let p3 = RSKLineSegmentIntersection(ls1: left, ls2: lineSegment)
-        
-        var intersectionPoints = [CGPoint]()
-        if !RSKPointIsNull(p0) {
-            intersectionPoints.append(p0)
-        }
-        if !RSKPointIsNull(p1) {
-            intersectionPoints.append(p1)
-        }
-        if !RSKPointIsNull(p2) {
-            intersectionPoints.append(p2)
-        }
-        if !RSKPointIsNull(p3) {
-            intersectionPoints.append(p3)
-        }
-        
-        return intersectionPoints
-    }
-
     fileprivate func displayImage() {
         guard let originalImage = originalImage else { return }
         
@@ -437,35 +378,15 @@ public class ImageCropView: CommonFlexView, UIGestureRecognizerDelegate {
         self.maskPath = StyledShapeLayer.shapePathForStyle(FlexImageCropViewConfiguration.imageMaskStyle.style, bounds: rectForMaskPath)
     }
 
-    fileprivate func croppedImage(image: UIImage, cropRect: CGRect, scale imageScale: CGFloat, orientation imageOrientation: UIImage.Orientation) -> UIImage {
-        if let images = image.images {
-            var croppedImages = [UIImage]()
-            
-            images.forEach {
-                croppedImages.append(croppedImage(image: $0, cropRect: cropRect, scale: imageScale, orientation: imageOrientation))
-            }
-            
-            return UIImage.animatedImage(with: croppedImages, duration: image.duration)!
-        } else {
-            if let croppedCGImage = image.cgImage!.cropping(to: cropRect) {
-                return UIImage(cgImage: croppedCGImage, scale: imageScale, orientation: imageOrientation)
-            }
-            
-            return image
-        }
-    }
-
-    fileprivate func croppedImage(image: UIImage, cropRect cropRect0: CGRect, rotationAngle: CGFloat, zoomScale: CGFloat, maskPath: UIBezierPath, applyMaskToCroppedImage: Bool) -> UIImage {
-        var cropRect = cropRect0
-        
-        // Step 1: check and correct the crop rect.
+    fileprivate func checkAndCorrectCropRect(forImage image: UIImage, withCurrentCropRect originalCropRect: CGRect) -> CGRect {
+        var cropRect = originalCropRect
         let imageSize = image.size
         let x = cropRect.minX
         let y = cropRect.minY
         let width = cropRect.width
         let height = cropRect.height
         
-        var imageOrientation = image.imageOrientation
+        let imageOrientation = image.imageOrientation
         if imageOrientation == .right || imageOrientation == .rightMirrored {
             cropRect.origin.x = y
             cropRect.origin.y = round(imageSize.width - cropRect.width - x)
@@ -483,63 +404,9 @@ public class ImageCropView: CommonFlexView, UIGestureRecognizerDelegate {
         
         let imageScale = image.scale
         cropRect = cropRect.applying(CGAffineTransform(scaleX: imageScale, y: imageScale))
-        
-        // Step 2: create an image using the data contained within the specified rect.
-        var croppedImage = self.croppedImage(image: image, cropRect: cropRect, scale: imageScale, orientation: imageOrientation)
-        
-        // Step 3: fix orientation of the cropped image.
-        croppedImage = croppedImage.fixOrientation()
-        imageOrientation = croppedImage.imageOrientation
-        
-        // Step 5: create a new context.
-        let maskSize = maskPath.bounds.integral.size
-        let contextSize = CGSize(
-            width: ceil(maskSize.width / zoomScale),
-            height: ceil(maskSize.height / zoomScale))
-        
-        UIGraphicsBeginImageContextWithOptions(contextSize, false, imageScale)
-        guard let ctx = UIGraphicsGetCurrentContext() else {
-            return croppedImage
-        }
-        
-        defer {
-            UIGraphicsEndImageContext()
-        }
-        
-        // Step 6: apply the mask if needed.
-        if applyMaskToCroppedImage {
-            // 6a: scale the mask to the size of the crop rect.
-            let maskPathCopy = maskPath.copy() as! UIBezierPath
-            let scale = 1 / zoomScale
-            maskPathCopy.apply(CGAffineTransform(scaleX: scale, y: scale))
-            
-            // 6b: move the mask to the top-left.
-            let translation = CGPoint(x: -maskPathCopy.bounds.minX, y: -maskPathCopy.bounds.minY)
-            maskPathCopy.apply(CGAffineTransform(translationX: translation.x, y: translation.y))
-            
-            // 6c: apply the mask.
-            maskPathCopy.addClip()
-        }
-        
-        // Step 7: rotate the cropped image if needed.
-        if rotationAngle != 0 {
-            croppedImage = croppedImage.rotateByAngle(angleInRadians: rotationAngle)
-        }
-        
-        // Step 8: draw the cropped image.
-        let point = CGPoint(
-            x: round((contextSize.width - croppedImage.size.width) * 0.5),
-            y: round((contextSize.height - croppedImage.size.height) * 0.5))
-        croppedImage.draw(at: point)
-        
-        // Step 9: get the cropped image affter processing from the context.
-        croppedImage = UIGraphicsGetImageFromCurrentImageContext()!
-        
-        // Step 10: return the cropped image affter processing.
-        
-        return UIImage(cgImage: croppedImage.cgImage!, scale: imageScale, orientation: imageOrientation)
+        return cropRect
     }
-
+    
     // MARK: - UIGestureRecognizerDelegate
 
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {

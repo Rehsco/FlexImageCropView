@@ -27,8 +27,6 @@
 		5B11129D22EDAC58009AD75B /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B11129B22EDAC57009AD75B /* StringExtension.swift */; };
 		5B1112A022EDACFC009AD75B /* CGRectHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B11129E22EDACFC009AD75B /* CGRectHelper.swift */; };
 		5B1112A122EDACFC009AD75B /* CGRectHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B11129E22EDACFC009AD75B /* CGRectHelper.swift */; };
-		5B1112A222EDACFC009AD75B /* CGGeometryExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B11129F22EDACFC009AD75B /* CGGeometryExtension.swift */; };
-		5B1112A322EDACFC009AD75B /* CGGeometryExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B11129F22EDACFC009AD75B /* CGGeometryExtension.swift */; };
 		5B1112B222EDD8AF009AD75B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1112B122EDD8AF009AD75B /* Helper.swift */; };
 		5B1112B322EDD8AF009AD75B /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1112B122EDD8AF009AD75B /* Helper.swift */; };
 		5B1112B522EDD9AB009AD75B /* MaskRectHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B1112B422EDD9AB009AD75B /* MaskRectHelper.swift */; };
@@ -62,7 +60,6 @@
 		5B11129822EDAC10009AD75B /* UIImageExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageExtensions.swift; sourceTree = "<group>"; };
 		5B11129B22EDAC57009AD75B /* StringExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		5B11129E22EDACFC009AD75B /* CGRectHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGRectHelper.swift; sourceTree = "<group>"; };
-		5B11129F22EDACFC009AD75B /* CGGeometryExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CGGeometryExtension.swift; sourceTree = "<group>"; };
 		5B1112B122EDD8AF009AD75B /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		5B1112B422EDD9AB009AD75B /* MaskRectHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaskRectHelper.swift; sourceTree = "<group>"; };
 		5B1112B722EDDB92009AD75B /* UIScrollViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIScrollViewExtensions.swift; sourceTree = "<group>"; };
@@ -173,7 +170,6 @@
 			children = (
 				5B11129822EDAC10009AD75B /* UIImageExtensions.swift */,
 				5B11129B22EDAC57009AD75B /* StringExtension.swift */,
-				5B11129F22EDACFC009AD75B /* CGGeometryExtension.swift */,
 				5B1112B722EDDB92009AD75B /* UIScrollViewExtensions.swift */,
 			);
 			path = Extensions;
@@ -401,7 +397,6 @@
 				5B1112B222EDD8AF009AD75B /* Helper.swift in Sources */,
 				5B1112A022EDACFC009AD75B /* CGRectHelper.swift in Sources */,
 				5B11128D22EDA940009AD75B /* RSKImageScrollView.swift in Sources */,
-				5B1112A222EDACFC009AD75B /* CGGeometryExtension.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,7 +413,6 @@
 				5B1112B922EDDB93009AD75B /* UIScrollViewExtensions.swift in Sources */,
 				5B11129D22EDAC58009AD75B /* StringExtension.swift in Sources */,
 				5B11129222EDA940009AD75B /* RSKTouchView.swift in Sources */,
-				5B1112A322EDACFC009AD75B /* CGGeometryExtension.swift in Sources */,
 				5B1112B622EDD9AB009AD75B /* MaskRectHelper.swift in Sources */,
 				5B11115F22EDA301009AD75B /* AppDelegate.swift in Sources */,
 				5B1112BB22EDDE52009AD75B /* CommonFlexViewController.swift in Sources */,
@@ -590,7 +584,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rehsco.FlexImageCropView;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -620,7 +614,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rehsco.FlexImageCropView;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -642,7 +636,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rehsco.FlexImageCropViewDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -663,7 +657,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1;
+				MARKETING_VERSION = 1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.rehsco.FlexImageCropViewDemo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

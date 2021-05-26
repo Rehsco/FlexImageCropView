@@ -1,14 +1,10 @@
-platform :ios, '11.0'
+platform :ios, '12.1'
 use_frameworks!
 
-pod 'MJRFlexStyleComponents'
 pod 'StyledOverlay'
-pod 'StyledLabel'
 
 target 'FlexImageCropView' do
-
 end
 
 target 'FlexImageCropViewDemo' do
-  
 end

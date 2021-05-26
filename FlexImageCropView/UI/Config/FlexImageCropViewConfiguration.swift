@@ -3,7 +3,8 @@
  */
 
 import UIKit
-import MJRFlexStyleComponents
+import FlexControls
+import FlexViews
 
 public class FlexImageCropViewConfiguration: StyleEnvironment {
     

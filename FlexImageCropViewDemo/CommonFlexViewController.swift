@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import MJRFlexStyleComponents
+import FlexViews
 
 open class CommonFlexViewController: UIViewController {
     public var defaultHeaderSize:CGFloat = 42

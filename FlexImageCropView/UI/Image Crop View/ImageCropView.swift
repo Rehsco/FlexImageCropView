@@ -27,7 +27,8 @@
 
 import UIKit
 import StyledLabel
-import MJRFlexStyleComponents
+import FlexViews
+import FlexMenu
 
 // K is a constant such that the accumulated error of our floating-point computations is definitely bounded by K units in the last place.
 #if arch(x86_64) || CPU_TYPE_ARM64
